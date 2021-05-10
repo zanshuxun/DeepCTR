@@ -31,15 +31,15 @@ if __name__ == "__main__":
 
     for i, feat in enumerate(sparse_features):
         dnn_feature_columns.append(tf.feature_column.embedding_column(
-            tf.feature_column.categorical_column_with_identity(feat, data[feat].nunique()), 4))
-        linear_feature_columns.append(tf.feature_column.categorical_column_with_identity(feat, data[feat].nunique()))
+            tf.feature_column.categorical_column_with_identity(feat, data[feat].max() + 1), 4))
+        linear_feature_columns.append(tf.feature_column.categorical_column_with_identity(feat, data[feat].max() + 1))
     for feat in dense_features:
         dnn_feature_columns.append(tf.feature_column.numeric_column(feat))
         linear_feature_columns.append(tf.feature_column.numeric_column(feat))
 
     # 3.generate input data for model
 
-    train, test = train_test_split(data, test_size=0.2, random_state=2020)
+    train, test = train_test_split(data, test_size=0.2, random_state=2021)
 
     # Not setting default value for continuous feature. filled with mean.
 

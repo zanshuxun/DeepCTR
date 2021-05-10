@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     # 2.count #unique features for each sparse field,and record dense feature field name
 
-    fixlen_feature_columns = [SparseFeat(feat, vocabulary_size=data[feat].nunique(),embedding_dim=4)
+    fixlen_feature_columns = [SparseFeat(feat, vocabulary_size=data[feat].max() + 1,embedding_dim=4)
                            for i,feat in enumerate(sparse_features)] + [DenseFeat(feat, 1,)
                           for feat in dense_features]
 
@@ -161,7 +161,7 @@ if __name__ == "__main__":
         lbe = LabelEncoder()
         data[feat] = lbe.fit_transform(data[feat])
     # 2.count #unique features for each sparse field
-    fixlen_feature_columns = [SparseFeat(feat, data[feat].nunique(),embedding_dim=4)
+    fixlen_feature_columns = [SparseFeat(feat, data[feat].max() + 1,embedding_dim=4)
                               for feat in sparse_features]
     linear_feature_columns = fixlen_feature_columns
     dnn_feature_columns = fixlen_feature_columns
@@ -241,7 +241,7 @@ if __name__ == "__main__":
 
     # 2.count #unique features for each sparse field and generate feature config for sequence feature
 
-    fixlen_feature_columns = [SparseFeat(feat, data[feat].nunique(),embedding_dim=4)
+    fixlen_feature_columns = [SparseFeat(feat, data[feat].max() + 1,embedding_dim=4)
                         for feat in sparse_features]
 
     use_weighted_sequence = False
@@ -367,7 +367,8 @@ if __name__ == "__main__":
                                          batch_size=2 ** 14, num_epochs=1, shuffle_factor=0)
 
     # 3.Define Model,train,predict and evaluate
-    model = DeepFMEstimator(linear_feature_columns, dnn_feature_columns, task='binary')
+    model = DeepFMEstimator(linear_feature_columns, dnn_feature_columns, task='binary', 
+                            config=tf.estimator.RunConfig(tf_random_seed=2021))
 
     model.train(train_model_input)
     eval_result = model.evaluate(test_model_input)
@@ -414,15 +415,15 @@ if __name__ == "__main__":
 
     for i, feat in enumerate(sparse_features):
         dnn_feature_columns.append(tf.feature_column.embedding_column(
-            tf.feature_column.categorical_column_with_identity(feat, data[feat].nunique()), 4))
-        linear_feature_columns.append(tf.feature_column.categorical_column_with_identity(feat, data[feat].nunique()))
+            tf.feature_column.categorical_column_with_identity(feat, data[feat].max() + 1), 4))
+        linear_feature_columns.append(tf.feature_column.categorical_column_with_identity(feat, data[feat].max() + 1))
     for feat in dense_features:
         dnn_feature_columns.append(tf.feature_column.numeric_column(feat))
         linear_feature_columns.append(tf.feature_column.numeric_column(feat))
 
     # 3.generate input data for model
 
-    train, test = train_test_split(data, test_size=0.2, random_state=2020)
+    train, test = train_test_split(data, test_size=0.2, random_state=2021)
 
     # Not setting default value for continuous feature. filled with mean.
 
@@ -430,7 +431,8 @@ if __name__ == "__main__":
     test_model_input = input_fn_pandas(test, sparse_features + dense_features, None, shuffle=False)
 
     # 4.Define Model,train,predict and evaluate
-    model = DeepFMEstimator(linear_feature_columns, dnn_feature_columns, task='binary')
+    model = DeepFMEstimator(linear_feature_columns, dnn_feature_columns, task='binary', 
+                            config=tf.estimator.RunConfig(tf_random_seed=2021))
 
     model.train(train_model_input)
     pred_ans_iter = model.predict(test_model_input)

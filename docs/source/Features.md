@@ -41,7 +41,7 @@ DNN based CTR prediction models usually have following 4 modules:
 - name : feature name
 - dimension : dimension of dense feature vector.
 - dtype : default `float32`.dtype of input tensor.
-- transform_fn : If not None, a function that can be used to transfrom
+- transform_fn : If not `None` , a function that can be used to transform
         values of the feature.  the function takes the input Tensor as its
         argument, and returns the output Tensor. 
         (e.g. `lambda x: (x - 3.0) / 4.2)`.
@@ -283,6 +283,18 @@ Deep Session Interest Network (DSIN) extracts users' multiple historical session
 ![DSIN](../pics/DSIN.png)
 
 [Feng Y, Lv F, Shen W, et al. Deep Session Interest Network for Click-Through Rate Prediction[J]. arXiv preprint arXiv:1905.06482, 2019.](https://arxiv.org/abs/1905.06482)
+
+### BST(Behavior Sequence Transformer)
+
+BST use the powerful Transformer model to capture the sequential signals underlying users’ behavior sequences . 
+
+[**BST Model API**](./deepctr.models.bst.html)  
+
+[BST example](https://github.com/shenweichen/DeepCTR/tree/master/examples/run_din.py)
+
+![BST](../pics/BST.png)
+
+[Qiwei Chen, Huan Zhao, Wei Li, Pipei Huang, and Wenwu Ou. 2019. Behavior sequence transformer for e-commerce recommendation in Alibaba. In Proceedings of the 1st International Workshop on Deep Learning Practice for High-Dimensional Sparse Data (DLP-KDD '19). Association for Computing Machinery, New York, NY, USA, Article 12, 1–4. DOI:)](https://arxiv.org/pdf/1905.06874.pdf)
 
 ### FiBiNET(Feature Importance and Bilinear feature Interaction NETwork)
 
