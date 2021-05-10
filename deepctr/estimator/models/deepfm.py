@@ -66,7 +66,9 @@ def DeepFMEstimator(linear_feature_columns, dnn_feature_columns, dnn_hidden_unit
             dnn_output = DNN(dnn_hidden_units, dnn_activation, l2_reg_dnn, dnn_dropout, dnn_use_bn, seed=seed)(dnn_input, training=train_flag)
             dnn_logit = tf.keras.layers.Dense(
                 1, use_bias=False, kernel_initializer=tf.keras.initializers.glorot_normal(seed=seed))(dnn_output)
-
+        tf.contrib.layers.summarize_tensor(dnn_logit, tag='dnn_logit')
+        tf.contrib.layers.summarize_tensor(fm_logit, tag='fm_logit')
+        tf.contrib.layers.summarize_tensor(linear_logits, tag='linear_logits')
         logits = linear_logits + fm_logit + dnn_logit
 
         return deepctr_model_fn(features, mode, logits, labels, task, linear_optimizer, dnn_optimizer,
