@@ -43,13 +43,17 @@ if __name__ == "__main__":
 
     # Not setting default value for continuous feature. filled with mean.
 
-    train_model_input = input_fn_pandas(train, sparse_features + dense_features, 'label', shuffle=True)
+    train_model_input = input_fn_pandas(train, sparse_features + dense_features, 'label',
+                                        batch_size=32, num_epochs=20, shuffle=True)
     test_model_input = input_fn_pandas(test, sparse_features + dense_features, None, shuffle=False)
 
     # 4.Define Model,train,predict and evaluate
+    config = tf.estimator.RunConfig(tf_random_seed=2021, model_dir='./deepfm',
+                                    save_summary_steps=1, log_step_count_steps=1)
     model = DeepFMEstimator(linear_feature_columns, dnn_feature_columns, task='binary',
-                            config=tf.estimator.RunConfig(tf_random_seed=2021))
+                            config=config)
 
+    tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.INFO)
     model.train(train_model_input)
     pred_ans_iter = model.predict(test_model_input)
     pred_ans = list(map(lambda x: x['pred'], pred_ans_iter))
