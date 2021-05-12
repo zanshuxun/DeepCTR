@@ -10,7 +10,5 @@ python 0_avazu_data_proc.py
 
 3. run the models:
 
-`python 5avazu_test_l2_0.py`
-
-`python 6avazu_test_l2_1e-4.py`
+run 1-6
 
